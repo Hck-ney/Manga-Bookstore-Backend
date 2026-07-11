@@ -14,8 +14,9 @@ public class Orders {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "customer_id")
-    private Customer customer_id;
+    @JoinColumn(name = "customerId")
+    private Customer customer;
+    @Enumerated(EnumType.STRING)
     private status status;
     private LocalDateTime date_time;
 }
