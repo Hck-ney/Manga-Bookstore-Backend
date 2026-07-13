@@ -7,7 +7,7 @@ import java.time.LocalDateTime;
 
 public record orderResponse(
         Long id,
-        Customer customer_id,
+        Customer customer,
         status status,
         LocalDateTime date_time
 ) {

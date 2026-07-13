@@ -6,9 +6,11 @@ import com.example.demo.entity.Customer;
 import com.example.demo.entity.Orders;
 import com.example.demo.enums.status;
 import com.example.demo.exceptions.OrderException;
+import com.example.demo.mapper.OrderMapper;
 import com.example.demo.repository.CustomerRepo;
 import com.example.demo.repository.OrderRepo;
 import com.example.demo.services.interfaces.OrderInterface;
+import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -21,30 +23,35 @@ import org.apache.commons.lang3.EnumUtils;
 
 @Service
 public class OrderService implements OrderInterface {
+
+    private final OrderMapper orderMapper;
+
+    public OrderService(OrderMapper orderMapper) {
+        this.orderMapper = orderMapper;
+    }
+
     @Autowired
     OrderRepo orderRepo;
 
-    // Used to get the Customer object by referencing its ID
     @Autowired
     CustomerRepo customerRepo;
-
     LocalDateTime dateNow = LocalDateTime.now();
+
     @Override
     public orderResponse createOrder(orderRequest request) {
-    Customer cus = customerRepo.getReferenceById(request.customer_id());
+    if(request.status()==null){
+        throw new OrderException("Status value is null", HttpStatus.BAD_REQUEST);
+    }
 
-    Orders order = new Orders();
-    order.setStatus(status.valueOf(request.status()));
-    order.setDate_time(dateNow);
+    if (!EnumUtils.isValidEnum(status.class, request.status())) {
+        throw new OrderException("Invalid status value: " + request.status(), HttpStatus.BAD_REQUEST);
+    }
+    Customer cus = customerRepo.findById(request.customer_id()).orElseThrow(()->  new OrderException("Customer_id not found", HttpStatus.NOT_FOUND));
+    Orders order = orderMapper.toEntity(request);
     order.setCustomer(cus);
-
+    order.setDate_time(dateNow);
     Orders savedOrder = orderRepo.save(order);
-    return new orderResponse(
-            order.getId(),
-            order.getCustomer(),
-            order.getStatus(),
-            order.getDate_time()
-    );
+    return orderMapper.toResponse(savedOrder);
 }
 
     @Override
@@ -80,6 +87,12 @@ public class OrderService implements OrderInterface {
                 savedOrder.getStatus(),
                 savedOrder.getDate_time()
         );
+    }
+
+    @Override
+    public void deleteOrder(Long id) {
+        Orders order = orderRepo.findById(id).orElseThrow(()-> new OrderException("Cannot find order with this ID",HttpStatus.NOT_FOUND));
+        orderRepo.delete(order);
     }
 }
 

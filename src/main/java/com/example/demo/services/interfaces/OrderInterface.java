@@ -8,4 +8,5 @@ public interface OrderInterface {
     orderResponse createOrder(orderRequest request);
     List<orderResponse> getOrderList();
     orderResponse updateOrder(Long id, orderRequest request);
+    void deleteOrder(Long id);
 }
