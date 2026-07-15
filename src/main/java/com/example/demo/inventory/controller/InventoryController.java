@@ -3,6 +3,8 @@ import com.example.demo.inventory.dto.InvRequest;
 import com.example.demo.inventory.entity.Inventory;
 import com.example.demo.inventory.services.InventoryServices;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -14,8 +16,8 @@ public class InventoryController {
     private InventoryServices inventoryServices;
 
     @PostMapping("/inventory")
-    public Inventory addInventory(@RequestBody InvRequest invRequest){
-        return inventoryServices.addInventory(invRequest);
+    public ResponseEntity<Inventory> addInventory(@RequestBody InvRequest invRequest){
+        return new ResponseEntity<>(inventoryServices.addInventory(invRequest), HttpStatus.CREATED);
     }
 
     @GetMapping("/inventory")

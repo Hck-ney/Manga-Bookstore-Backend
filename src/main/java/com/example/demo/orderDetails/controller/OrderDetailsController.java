@@ -4,6 +4,8 @@ import com.example.demo.orderDetails.dto.OrderDetailsDTO;
 import com.example.demo.orderDetails.entity.OrderDetails;
 import com.example.demo.orderDetails.services.OrderDetailsServices;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -13,15 +15,15 @@ public class OrderDetailsController {
     @Autowired
     OrderDetailsServices orderDetailsServices;
 
-    @PostMapping("/OrderDetails/")
-    public OrderDetails createOrderDetail(@RequestBody OrderDetailsDTO orderDetailsDTO){
-        return  orderDetailsServices.createOrderDetail(orderDetailsDTO);
+    @PostMapping("/order_details")
+    public ResponseEntity<OrderDetails> createOrderDetail(@RequestBody OrderDetailsDTO orderDetailsDTO){
+        return  new ResponseEntity<>(orderDetailsServices.createOrderDetail(orderDetailsDTO), HttpStatus.CREATED);
     }
-    @GetMapping("/OrderDetails/{orderDetailId}")
+    @GetMapping("/order_details/{orderDetailId}")
     public OrderDetails getOrderDetail(@PathVariable Long orderDetailId){
         return orderDetailsServices.getOrderDetail(orderDetailId);
     }
-    @GetMapping("/OrderDetails/")
+    @GetMapping("/order_details")
     public List<OrderDetails> listOrderDetail(){
         return orderDetailsServices.listOrderDetail();
     }
@@ -29,7 +31,7 @@ public class OrderDetailsController {
     public OrderDetails updateOrderDetail(@PathVariable Long orderDetailId, @RequestBody OrderDetailsDTO orderDetailsDTO){
         return orderDetailsServices.updateOrderDetail(orderDetailId, orderDetailsDTO);
     }
-    @DeleteMapping("/OrderDetails/{orderDetailId}")
+    @DeleteMapping("/Order_details/{orderDetailId}")
     public void deleteOrderDetail(@PathVariable Long orderDetailId){
         orderDetailsServices.deleteOrderDetail(orderDetailId);
     }

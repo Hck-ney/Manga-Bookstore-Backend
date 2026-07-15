@@ -3,6 +3,8 @@ package com.example.demo.customer.controller;
 import com.example.demo.customer.entity.Customer;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import com.example.demo.customer.services.CustomerService;
 
@@ -15,8 +17,8 @@ public class CustomerController {
 
     // Customer Sign Up
     @PostMapping("/customers")
-    public Customer createCustomer(@Valid @RequestBody Customer request){
-        return cusService.createCustomer(request);
+    public ResponseEntity<Customer> createCustomer(@Valid @RequestBody Customer request){
+        return new ResponseEntity<>(cusService.createCustomer(request),HttpStatus.CREATED);
     }
 
     // Fetch all Customers

@@ -3,6 +3,8 @@ package com.example.demo.product.controller;
 import com.example.demo.product.entity.Product;
 import com.example.demo.product.services.ProductServices;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -14,8 +16,8 @@ public class ProductController {
     private ProductServices productServices;
 
     @PostMapping("/Product")
-    public Product createProduct(@RequestBody Product product){
-        return productServices.createProduct(product);
+    public ResponseEntity<Product> createProduct(@RequestBody Product product){
+        return new ResponseEntity<>(productServices.createProduct(product), HttpStatus.CREATED);
     }
 
     @GetMapping("/Product/{product_id}")

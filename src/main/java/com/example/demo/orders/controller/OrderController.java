@@ -4,6 +4,8 @@ import com.example.demo.orders.dto.orderRequest;
 import com.example.demo.orders.dto.orderResponse;
 import com.example.demo.orders.services.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
@@ -12,19 +14,17 @@ import java.util.List;
 @RestController
 public class OrderController {
 
-    LocalDateTime dateNow = LocalDateTime.now();
-
     @Autowired
     OrderService serv;
 
     // Creates Orders
-    @PostMapping("/orders/")
-    public orderResponse createOrder(@RequestBody orderRequest request){
-        return serv.createOrder(request);
+    @PostMapping("/orders")
+    public ResponseEntity<orderResponse> createOrder(@RequestBody orderRequest request){
+        return new ResponseEntity<>(serv.createOrder(request), HttpStatus.CREATED);
     }
 
     // List all orders
-    @GetMapping("/orders/")
+    @GetMapping("/orders")
     public List<orderResponse> getOrderList(){
         return serv.getOrderList();
     }
