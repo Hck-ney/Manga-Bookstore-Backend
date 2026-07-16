@@ -32,8 +32,8 @@ public class OrderController {
 //    public OrderResponse updateOrder(@PathVariable Long id, @RequestBody orderRequest request){
 //        return serv.updateOrder(id, request);
 //    }
-//    @DeleteMapping("/orders/{order_id}")
-//    public void deleteOrder(@PathVariable Long id){
-//         serv.deleteOrder(id);
-//    }
+    @DeleteMapping("/orders/{order_id}")
+    public void deleteOrder(@PathVariable Long order_id){
+         serv.deleteOrder(order_id);
+    }
 }

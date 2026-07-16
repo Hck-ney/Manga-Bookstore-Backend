@@ -6,7 +6,7 @@ import java.math.BigDecimal;
 
 public record OrderDetailsResponse(
         Long id,
-        Long productId,
+        String product_name,
         Integer quantity,
         BigDecimal price,
         BigDecimal total
@@ -14,7 +14,7 @@ public record OrderDetailsResponse(
     public static OrderDetailsResponse from(OrderDetails detail) {
         return new OrderDetailsResponse(
                 detail.getId(),
-                detail.getProduct().getId(),
+                detail.getProduct().getName(),
                 detail.getQuantity(),
                 detail.getPrice(),
                 detail.getTotal()

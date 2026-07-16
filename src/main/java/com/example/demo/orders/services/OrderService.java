@@ -1,5 +1,7 @@
 package com.example.demo.orders.services;
 
+import com.example.demo.inventory.entity.Inventory;
+import com.example.demo.inventory.repository.InventoryRepo;
 import com.example.demo.orderDetails.dto.OrderDetailsDTO;
 import com.example.demo.orderDetails.entity.OrderDetails;
 import com.example.demo.orders.dto.orderRequest;
@@ -45,6 +47,9 @@ public class OrderService implements OrderInterface {
     @Autowired
     ProductRepository productRepository;
 
+    @Autowired
+    InventoryRepo inventoryRepo;
+
     @Transactional()
     @Override
     public OrderResponse createOrder(orderRequest request) {
@@ -75,6 +80,12 @@ public class OrderService implements OrderInterface {
             orderDet.setTotal(orderDet.getPrice().multiply(BigDecimal.valueOf(orderDet.getQuantity())));
             orderDet.setOrder(orders);
             orderDetailsList.add(orderDet);
+            Inventory inv = inventoryRepo.findByProductId(product.getId());
+            if(inv.getStockQuantity()-od.quantity()<0){
+                throw new OrderException("Stock quantity of " + inv.getProduct().getName() + " isn't enough", HttpStatus.CONFLICT);
+            }
+            inv.setStockQuantity(inv.getStockQuantity()-od.quantity());
+            inventoryRepo.save(inv);
             sum = sum.add(orderDet.getTotal());
         }
         orders.setTotal(sum);
@@ -82,7 +93,7 @@ public class OrderService implements OrderInterface {
         orderRepo.save(orders);
         return OrderResponse.from(orders);
     }
-}
+
 
 //    @Override
 //    public List<orderResponse> getOrderList() {
@@ -119,9 +130,10 @@ public class OrderService implements OrderInterface {
 //        );
 //    }
 
-//    @Override
-//    public void deleteOrder(Long id) {
-//        Orders order = orderRepo.findById(id).orElseThrow(()-> new OrderException("Cannot find order with this ID",HttpStatus.NOT_FOUND));
-//        orderRepo.delete(order);
-//    }
+    @Override
+    public void deleteOrder(Long order_id) {
+        Orders order = orderRepo.findById(order_id).orElseThrow(()-> new OrderException("Cannot find order with this ID",HttpStatus.NOT_FOUND));
+        orderRepo.delete(order);
+    }
 
+}

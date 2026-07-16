@@ -6,4 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface InventoryRepo extends JpaRepository<Inventory, Long> {
+    Inventory findByProductId(Long id);
 }
