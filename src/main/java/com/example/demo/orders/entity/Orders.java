@@ -2,7 +2,6 @@ package com.example.demo.orders.entity;
 
 import com.example.demo.customer.entity.Customer;
 import com.example.demo.orderDetails.entity.OrderDetails;
-import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import lombok.Data;
 import com.example.demo.enums.status;

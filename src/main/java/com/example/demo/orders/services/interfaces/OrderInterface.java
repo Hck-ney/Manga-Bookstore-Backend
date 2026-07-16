@@ -1,12 +1,11 @@
 package com.example.demo.orders.services.interfaces;
+import com.example.demo.orders.dto.OrderResponse;
 import com.example.demo.orders.dto.orderRequest;
-import com.example.demo.orders.dto.orderResponse;
-
-import java.util.List;
+import com.example.demo.orders.entity.Orders;
 
 public interface OrderInterface {
-    orderResponse createOrder(orderRequest request);
-    List<orderResponse> getOrderList();
-    orderResponse updateOrder(Long id, orderRequest request);
-    void deleteOrder(Long id);
+    OrderResponse createOrder(orderRequest request);
+    // List<orderResponse> getOrderList();
+    // orderResponse updateOrder(Long id, orderRequest request);
+    // void deleteOrder(Long id);
 }

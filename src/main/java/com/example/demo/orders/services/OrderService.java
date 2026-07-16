@@ -1,7 +1,9 @@
 package com.example.demo.orders.services;
 
+import com.example.demo.orderDetails.dto.OrderDetailsDTO;
+import com.example.demo.orderDetails.entity.OrderDetails;
 import com.example.demo.orders.dto.orderRequest;
-import com.example.demo.orders.dto.orderResponse;
+import com.example.demo.orders.dto.OrderResponse;
 import com.example.demo.customer.entity.Customer;
 import com.example.demo.orders.entity.Orders;
 import com.example.demo.enums.status;
@@ -10,10 +12,14 @@ import com.example.demo.orders.mapper.OrderMapper;
 import com.example.demo.customer.repository.CustomerRepo;
 import com.example.demo.orders.repository.OrderRepo;
 import com.example.demo.orders.services.interfaces.OrderInterface;
+import com.example.demo.product.entity.Product;
+import com.example.demo.product.repository.ProductRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -36,62 +42,86 @@ public class OrderService implements OrderInterface {
     CustomerRepo customerRepo;
     LocalDateTime dateNow = LocalDateTime.now();
 
-    @Override
-    public orderResponse createOrder(orderRequest request) {
-    if(request.status()==null){
-        throw new OrderException("Status value is null", HttpStatus.BAD_REQUEST);
-    }
+    @Autowired
+    ProductRepository productRepository;
 
-    if (!EnumUtils.isValidEnum(status.class, request.status())) {
-        throw new OrderException("Invalid status value: " + request.status(), HttpStatus.BAD_REQUEST);
+    @Transactional()
+    @Override
+    public OrderResponse createOrder(orderRequest request) {
+        if (request.status() == null) {
+            throw new OrderException("Status value is null", HttpStatus.BAD_REQUEST);
+        }
+        if (!EnumUtils.isValidEnum(status.class, request.status())) {
+            throw new OrderException("Invalid status value: " + request.status(), HttpStatus.BAD_REQUEST);
+        }
+        if (request.orderDetailsDTO() == null) {
+            throw new OrderException("Order details list should not be null", HttpStatus.BAD_REQUEST);
+        }
+        Customer cus = customerRepo.findById(request.customer_id()).orElseThrow(() -> new OrderException("Customer_id not found", HttpStatus.NOT_FOUND));
+        Orders orders = orderMapper.toEntity(request);
+        orders.setCustomer(cus);
+        orders.setDate_time(dateNow);
+
+        List<OrderDetails> orderDetailsList = new ArrayList<>();
+        // to get Total amount of all order details
+        BigDecimal sum = BigDecimal.ZERO;
+
+        for (OrderDetailsDTO od : request.orderDetailsDTO()) {
+            OrderDetails orderDet = new OrderDetails();
+            Product product = productRepository.findById(od.product_id()).orElseThrow(() -> new OrderException("Product associated with this ID cannot be found", HttpStatus.NOT_FOUND));
+            orderDet.setProduct(product);
+            orderDet.setPrice(product.getPrice());
+            orderDet.setQuantity(od.quantity());
+            orderDet.setTotal(orderDet.getPrice().multiply(BigDecimal.valueOf(orderDet.getQuantity())));
+            orderDet.setOrder(orders);
+            orderDetailsList.add(orderDet);
+            sum = sum.add(orderDet.getTotal());
+        }
+        orders.setTotal(sum);
+        orders.setOrderDetails(orderDetailsList);
+        orderRepo.save(orders);
+        return OrderResponse.from(orders);
     }
-    Customer cus = customerRepo.findById(request.customer_id()).orElseThrow(()->  new OrderException("Customer_id not found", HttpStatus.NOT_FOUND));
-    Orders order = orderMapper.toEntity(request);
-    order.setCustomer(cus);
-    order.setDate_time(dateNow);
-    Orders savedOrder = orderRepo.save(order);
-    return orderMapper.toResponse(savedOrder);
 }
 
-    @Override
-    public List<orderResponse> getOrderList() {
-        List <Orders> order = orderRepo.findAll();
-        List <orderResponse> responses = new ArrayList<>();
-
-        for(Orders orders: order){
-            responses.add(new orderResponse(
-                    orders.getId(),
-                    orders.getCustomer(),
-                    orders.getStatus(),
-                    orders.getDate_time()
-            ));
-        }
-        return responses;
-    }
+//    @Override
+//    public List<orderResponse> getOrderList() {
+//        List <Orders> order = orderRepo.findAll();
+//        List <orderResponse> responses = new ArrayList<>();
+//
+//        for(Orders orders: order){
+//            responses.add(new orderResponse(
+//                    orders.getId(),
+//                    orders.getCustomer(),
+//                    orders.getStatus(),
+//                    orders.getDate_time()
+//            ));
+//        }
+//        return responses;
+//    }
 
     // Change status of an order
-    @Override
-    public orderResponse updateOrder(Long id, orderRequest request) {
-        // 1. Find the existing order
-        Orders existingOrder = orderRepo.findById(id)
-                .orElseThrow(() -> new OrderException("No order found with this ID", HttpStatus.NOT_FOUND));
+//    @Override
+//    public orderResponse updateOrder(Long id, orderRequest request) {
+//        // 1. Find the existing order
+//        Orders existingOrder = orderRepo.findById(id)
+//                .orElseThrow(() -> new OrderException("No order found with this ID", HttpStatus.NOT_FOUND));
+//
+//        if (request.status() != null && EnumUtils.isValidEnum(status.class, request.status())) {
+//            existingOrder.setStatus(status.valueOf(request.status()));
+//        }
+//        Orders savedOrder = orderRepo.save(existingOrder);
+//        return new orderResponse(
+//                savedOrder.getId(),
+//                savedOrder.getCustomer(),
+//                savedOrder.getStatus(),
+//                savedOrder.getDate_time()
+//        );
+//    }
 
-        if (request.status() != null && EnumUtils.isValidEnum(status.class, request.status())) {
-            existingOrder.setStatus(status.valueOf(request.status()));
-        }
-        Orders savedOrder = orderRepo.save(existingOrder);
-        return new orderResponse(
-                savedOrder.getId(),
-                savedOrder.getCustomer(),
-                savedOrder.getStatus(),
-                savedOrder.getDate_time()
-        );
-    }
-
-    @Override
-    public void deleteOrder(Long id) {
-        Orders order = orderRepo.findById(id).orElseThrow(()-> new OrderException("Cannot find order with this ID",HttpStatus.NOT_FOUND));
-        orderRepo.delete(order);
-    }
-}
+//    @Override
+//    public void deleteOrder(Long id) {
+//        Orders order = orderRepo.findById(id).orElseThrow(()-> new OrderException("Cannot find order with this ID",HttpStatus.NOT_FOUND));
+//        orderRepo.delete(order);
+//    }
 

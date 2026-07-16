@@ -1,7 +1,7 @@
 package com.example.demo.orders.mapper;
 
 import com.example.demo.orders.dto.orderRequest;
-import com.example.demo.orders.dto.orderResponse;
+import com.example.demo.orders.dto.OrderResponse;
 import com.example.demo.orders.entity.Orders;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -10,7 +10,7 @@ import org.mapstruct.Mapping;
 public interface OrderMapper {
     // ignored values will be on the service layer
 
-    orderResponse toResponse(Orders order);
+    OrderResponse toResponse(Orders order);
 
     @Mapping(target = "customer", ignore = true)
     @Mapping(target = "date_time", ignore = true)

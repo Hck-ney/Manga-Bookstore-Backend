@@ -31,7 +31,7 @@ public class OrderDetailsServices {
         Product product = productRepository.findById(orderDetailsDTO.product_id()).orElseThrow(()-> new OrderException("Invalid Product ID", HttpStatus.NOT_FOUND));
 
         OrderDetails orderDetails = new OrderDetails();
-        orderDetails.setOrders(orders);
+        orderDetails.setOrder(orders);
         orderDetails.setQuantity(orderDetailsDTO.quantity());
         orderDetails.setProduct(product);
         orderDetails.setPrice(product.getPrice());
