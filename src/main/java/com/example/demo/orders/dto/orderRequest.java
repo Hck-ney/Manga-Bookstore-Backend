@@ -10,6 +10,8 @@ public record orderRequest(
         String status,
         // date is handled by the service layer
         LocalDateTime date_time,
+
         List<OrderDetailsDTO> orderDetailsDTO
+
 ) {
 }

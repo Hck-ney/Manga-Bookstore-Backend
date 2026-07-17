@@ -1,5 +1,6 @@
 package com.example.demo.customer.controller;
 
+import com.example.demo.customer.dto.CustomerResponse;
 import com.example.demo.customer.entity.Customer;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,8 +18,8 @@ public class CustomerController {
 
     // Customer Sign Up
     @PostMapping("/customers")
-    public ResponseEntity<Customer> createCustomer(@Valid @RequestBody Customer request){
-        return new ResponseEntity<>(cusService.createCustomer(request),HttpStatus.CREATED);
+    public ResponseEntity<Customer> createCustomer(@Valid @RequestBody Customer customer){
+        return new ResponseEntity<>(cusService.createCustomer(customer),HttpStatus.CREATED);
     }
 
     // Fetch all Customers
@@ -29,7 +30,7 @@ public class CustomerController {
 
     // Get Specific Customer by ID
     @GetMapping("/customers/{customer_id}")
-    public Customer getCustomerById(@PathVariable Long customer_id){
+    public CustomerResponse getCustomerById(@PathVariable Long customer_id){
         return cusService.getCustomerById(customer_id);
     }
 
@@ -42,6 +43,6 @@ public class CustomerController {
     //Delete Customer
     @DeleteMapping("/customers/{customer_id}")
     public void deleteCustomer(@PathVariable Long customer_id){
-
+        cusService.deleteCustomer(customer_id);
     }
 }

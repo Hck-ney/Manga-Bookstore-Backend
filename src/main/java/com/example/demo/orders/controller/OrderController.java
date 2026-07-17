@@ -2,7 +2,6 @@ package com.example.demo.orders.controller;
 
 import com.example.demo.orders.dto.orderRequest;
 import com.example.demo.orders.dto.OrderResponse;
-import com.example.demo.orders.entity.Orders;
 import com.example.demo.orders.services.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -22,10 +21,10 @@ public class OrderController {
     }
 
     // List all orders
-//    @GetMapping("/orders")
-//    public List<OrderResponse> getOrderList(){
-//        return serv.getOrderList();
-//    }
+    @GetMapping("/orders")
+    public List<OrderResponse> getOrderList(){
+        return serv.getOrderList();
+    }
 
     // Update specific order
 //    @PutMapping("/orders/{order_id}")

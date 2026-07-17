@@ -64,6 +64,9 @@ public class OrderService implements OrderInterface {
         }
         Customer cus = customerRepo.findById(request.customer_id()).orElseThrow(() -> new OrderException("Customer_id not found", HttpStatus.NOT_FOUND));
         Orders orders = orderMapper.toEntity(request);
+        orders.setCustomer_name(cus.getName());
+        orders.setEmail(cus.getEmail());
+        orders.setAddress(cus.getAddress());
         orders.setCustomer(cus);
         orders.setDate_time(dateNow);
 
@@ -95,21 +98,17 @@ public class OrderService implements OrderInterface {
     }
 
 
-//    @Override
-//    public List<orderResponse> getOrderList() {
-//        List <Orders> order = orderRepo.findAll();
-//        List <orderResponse> responses = new ArrayList<>();
-//
-//        for(Orders orders: order){
-//            responses.add(new orderResponse(
-//                    orders.getId(),
-//                    orders.getCustomer(),
-//                    orders.getStatus(),
-//                    orders.getDate_time()
-//            ));
-//        }
-//        return responses;
-//    }
+    @Override
+    public List<OrderResponse> getOrderList() {
+        List <Orders> order = orderRepo.findAll();
+        List <OrderResponse> responses = new ArrayList<>();
+
+        for(Orders orders: order)
+        {
+            responses.add(OrderResponse.from(orders));
+        }
+        return responses;
+    }
 
     // Change status of an order
 //    @Override
