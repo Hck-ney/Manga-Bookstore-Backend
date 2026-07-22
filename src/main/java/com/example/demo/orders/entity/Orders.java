@@ -6,7 +6,7 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Pattern;
 import lombok.Data;
-import com.example.demo.enums.status;
+import com.example.demo.enums.Status;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
@@ -28,12 +28,12 @@ public class Orders {
     private Customer customer;
     private String customer_name;
     private String address;
-    private Integer phone_number;
+    private String phone_number;
     @Email(message = "Basic format invalid")
     @Pattern(regexp = "^[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,}$", message = "Strict format invalid")
     private String email;
     @Enumerated(EnumType.STRING)
-    private status status;
+    private Status status;
     private BigDecimal total;
     private LocalDateTime date_time;
     @OneToMany(mappedBy = "order", cascade = {CascadeType.PERSIST, CascadeType.REMOVE}, orphanRemoval = true)

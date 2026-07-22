@@ -1,6 +1,6 @@
 package com.example.demo.enums;
 
-public enum status {
+public enum Status {
     PENDING,
     CONFIRMED,
     SHIPPED,

@@ -14,7 +14,7 @@ public record OrderDetailsResponse(
     public static OrderDetailsResponse from(OrderDetails detail) {
         return new OrderDetailsResponse(
                 detail.getId(),
-                detail.getProduct().getName(),
+                detail.getManga().getTitle(),
                 detail.getQuantity(),
                 detail.getPrice(),
                 detail.getTotal()

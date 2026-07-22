@@ -1,6 +1,6 @@
 package com.example.demo.inventory.entity;
 
-import com.example.demo.product.entity.Product;
+import com.example.demo.manga.entity.Manga;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -14,7 +14,7 @@ public class Inventory {
     private Long id;
 
     @OneToOne
-    private Product product;
+    private Manga manga;
     private Integer stockQuantity;
     private Integer reorderLevel;
 }

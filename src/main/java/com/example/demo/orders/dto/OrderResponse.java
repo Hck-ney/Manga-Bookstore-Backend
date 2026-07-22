@@ -1,6 +1,6 @@
 package com.example.demo.orders.dto;
 
-import com.example.demo.enums.status;
+import com.example.demo.enums.Status;
 import com.example.demo.orderDetails.dto.OrderDetailsResponse;
 import com.example.demo.orders.entity.Orders;
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -12,7 +12,7 @@ import java.util.List;
 public record OrderResponse(
         Long id,
         Long customer_id,
-        status status,
+        Status status,
         @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy HH:mm:ss")
         LocalDateTime date_time,
         BigDecimal total,
