@@ -2,12 +2,10 @@ package com.example.demo.manga.entity;
 import com.example.demo.enums.Category;
 import com.example.demo.mangaDescription.entity.MangaDescription;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Pattern;
 import lombok.Data;
 
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
 
 @Entity
 @Data

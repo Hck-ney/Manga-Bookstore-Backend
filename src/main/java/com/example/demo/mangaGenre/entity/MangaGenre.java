@@ -14,7 +14,7 @@ public class MangaGenre {
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "manga_id")
     private Manga manga;
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "genre_id")
     private Genre genre;
 }

@@ -6,6 +6,9 @@ import com.example.demo.manga.entity.Manga;
 import com.example.demo.manga.repository.MangaRepository;
 import com.example.demo.mangaDescription.entity.MangaDescription;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
@@ -35,6 +38,26 @@ public class MangaServices {
     public MangaDTO getManga(Long manga_id){
         Manga manga =  mangaRepository.findById(manga_id).orElseThrow(()-> new OrderException("Manga associated with this Id is not found", HttpStatus.NOT_FOUND));
         return MangaDTO.toResponse(manga);
+    }
+
+    public List<MangaDTO> mangaPage1(){
+        Pageable first10 = PageRequest.of(0, 10, Sort.by("title"));
+        List<MangaDTO> dtoPage1 = new ArrayList<>();
+        List<Manga> page1 = mangaRepository.findAll(first10).getContent();
+        for(Manga x: page1){
+            dtoPage1.add(MangaDTO.toResponse(x));
+        }
+        return dtoPage1;
+    }
+
+    public List<MangaDTO> mangaPage2(){
+        Pageable second10 = PageRequest.of(1,10, Sort.by("title"));
+        List<MangaDTO> dtoPage2 = new ArrayList<>();
+        List<Manga> page2 = mangaRepository.findAll(second10).getContent();
+        for(Manga x: page2){
+            dtoPage2.add(MangaDTO.toResponse(x));
+        }
+        return dtoPage2;
     }
 
     public List<MangaDTO> getAllManga(){
