@@ -32,14 +32,13 @@ public class MangaController {
         return mangaServices.getAllManga();
     }
 
-    @GetMapping("/catalog/1")
-    public List<MangaDTO> getMangaPage1(){
-        return mangaServices.mangaPage1();
-    }
-
-    @GetMapping("/catalog/2")
-    public List<MangaDTO> getMangaPage2(){
-        return mangaServices.mangaPage2();
+    @GetMapping("/catalog/{page_number}")
+    public List<MangaDTO> getMangaPage(
+            @PathVariable Integer page_number,
+            @RequestParam(required = false) String category,
+            @RequestParam(required = false) String sortedBy
+            ){
+        return mangaServices.getMangaPage("AVAILABLE", category, page_number, sortedBy);
     }
 
     @PutMapping("/manga/{manga_id}")

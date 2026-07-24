@@ -1,14 +1,19 @@
 package com.example.demo.manga.services;
 
+import com.example.demo.enums.Availability;
+import com.example.demo.enums.Category;
 import com.example.demo.exceptions.OrderException;
 import com.example.demo.manga.dto.MangaDTO;
 import com.example.demo.manga.entity.Manga;
 import com.example.demo.manga.repository.MangaRepository;
 import com.example.demo.mangaDescription.entity.MangaDescription;
+import jakarta.persistence.criteria.Predicate;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
@@ -40,24 +45,32 @@ public class MangaServices {
         return MangaDTO.toResponse(manga);
     }
 
-    public List<MangaDTO> mangaPage1(){
-        Pageable first10 = PageRequest.of(0, 10, Sort.by("title"));
-        List<MangaDTO> dtoPage1 = new ArrayList<>();
-        List<Manga> page1 = mangaRepository.findAll(first10).getContent();
-        for(Manga x: page1){
-            dtoPage1.add(MangaDTO.toResponse(x));
-        }
-        return dtoPage1;
-    }
+    public List<MangaDTO> getMangaPage(String availability, String category, Integer page_number, String sortedBy) {
 
-    public List<MangaDTO> mangaPage2(){
-        Pageable second10 = PageRequest.of(1,10, Sort.by("title"));
-        List<MangaDTO> dtoPage2 = new ArrayList<>();
-        List<Manga> page2 = mangaRepository.findAll(second10).getContent();
-        for(Manga x: page2){
-            dtoPage2.add(MangaDTO.toResponse(x));
+        if (page_number == null || page_number <= 1) {
+            page_number = 0;
+        } else {
+            page_number = page_number - 1;
         }
-        return dtoPage2;
+        String sortField = (sortedBy != null && !sortedBy.isEmpty()) ? sortedBy : "title";
+        Pageable pageable = PageRequest.of(page_number, 10, Sort.by(sortField));
+        Specification<Manga> spec = (root, query, criteriaBuilder) -> {
+            List<Predicate> predicates = new ArrayList<>();
+            if (availability != null && !availability.isEmpty()) {
+                predicates.add(criteriaBuilder.equal(root.get("availability"), Availability.valueOf(availability)));
+            }
+            else {
+                predicates.add(criteriaBuilder.equal(root.get("availability"), Availability.AVAILABLE));
+            }
+            if (category != null && !category.isEmpty()) {
+                predicates.add(criteriaBuilder.equal(root.get("category"), Category.valueOf(category)));
+            }
+            return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
+        };
+        Page<Manga> resultPage = mangaRepository.findAll(spec, pageable);
+        return resultPage.getContent().stream()
+                .map(MangaDTO::toResponse)
+                .toList();
     }
 
     public List<MangaDTO> getAllManga(){
@@ -92,6 +105,9 @@ public class MangaServices {
         }
         if(manga.getCategory()!= null){
             existing.setCategory(manga.getCategory());
+        }
+        if(manga.getAvailability()!=null){
+            existing.setAvailability(manga.getAvailability());
         }
         Manga updatedManga = mangaRepository.save(existing);
         return MangaDTO.toResponse(updatedManga);

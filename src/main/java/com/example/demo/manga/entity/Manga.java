@@ -1,4 +1,5 @@
 package com.example.demo.manga.entity;
+import com.example.demo.enums.Availability;
 import com.example.demo.enums.Category;
 import com.example.demo.mangaDescription.entity.MangaDescription;
 import jakarta.persistence.*;
@@ -24,4 +25,6 @@ public class Manga {
     private Category category;
     @OneToOne(cascade = CascadeType.ALL)
     private MangaDescription mangaDescription;
+    @Column(nullable = false)
+    private Availability availability;
 }
