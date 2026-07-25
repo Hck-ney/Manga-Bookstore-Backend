@@ -4,9 +4,7 @@ import com.example.demo.enums.Availability;
 import com.example.demo.enums.Category;
 import com.example.demo.manga.entity.Manga;
 import com.example.demo.mangaDescription.entity.MangaDescription;
-
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
 
 
 public record MangaRequest(

@@ -9,7 +9,6 @@ import com.example.demo.manga.entity.Manga;
 import com.example.demo.manga.repository.MangaRepository;
 import com.example.demo.mangaDescription.entity.MangaDescription;
 import jakarta.persistence.criteria.Predicate;
-import org.hibernate.query.SortDirection;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;

@@ -2,7 +2,6 @@ package com.example.demo;
 
 import com.example.demo.enums.Availability;
 import com.example.demo.enums.Category;
-import com.example.demo.exceptions.OrderException;
 import com.example.demo.manga.dto.MangaRequest;
 import com.example.demo.manga.dto.MangaResponse;
 import com.example.demo.manga.entity.Manga;
@@ -11,18 +10,11 @@ import com.example.demo.manga.services.MangaServices;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.boot.test.context.SpringBootTest;
-
 import java.math.BigDecimal;
-import java.util.List;
-import java.util.Optional;
-
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
@@ -60,7 +52,7 @@ class MangaServicesTest {
                 "http://example.com/cover.jpg",
                 Category.SHONEN,
                 Availability.AVAILABLE,
-                ""
+                "zxc"
         );
     }
     @Test
