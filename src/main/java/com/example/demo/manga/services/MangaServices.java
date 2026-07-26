@@ -3,6 +3,7 @@ package com.example.demo.manga.services;
 import com.example.demo.enums.Availability;
 import com.example.demo.enums.Category;
 import com.example.demo.exceptions.OrderException;
+import com.example.demo.manga.dto.MangaPageResponse;
 import com.example.demo.manga.dto.MangaRequest;
 import com.example.demo.manga.dto.MangaResponse;
 import com.example.demo.manga.entity.Manga;
@@ -54,7 +55,7 @@ public class MangaServices {
         return MangaResponse.toResponse(manga);
     }
 
-    public List<MangaResponse> getMangaPage(String availability, String category, Integer page_number, String sortedBy, String order, String search) {
+    public MangaPageResponse getMangaPage(String availability, String category, Integer page_number, String sortedBy, String order, String search) {
         if (page_number == null || page_number <= 1) {
             page_number = 0;
         } else {
@@ -68,7 +69,7 @@ public class MangaServices {
         }
         String sortField = (sortedBy != null && !sortedBy.isEmpty()) ? sortedBy : "dateAdded";
         Pageable pageable = PageRequest.of(page_number, 10, Sort.by(direction, sortField));
-        if(search!=null){
+        if (search != null) {
             Pageable page = PageRequest.of(page_number, 10, Sort.by(Sort.Direction.DESC, "title"));
             Specification<Manga> spec = (root, query, criteriaBuilder) -> {
                 List<Predicate> predicates = new ArrayList<>();
@@ -77,11 +78,14 @@ public class MangaServices {
                 return criteriaBuilder.or(predicates.toArray(new Predicate[0]));
             };
             Page<Manga> result = mangaRepository.findAll(spec, page);
-            return result.getContent().stream()
+            List<MangaResponse> content = result.getContent().stream()
                     .map(MangaResponse::toResponse)
                     .toList();
-        }
-        else{
+            return new MangaPageResponse(
+                    content,
+                    result.getTotalPages()
+            );
+        } else {
             Specification<Manga> spec = (root, query, criteriaBuilder) -> {
                 List<Predicate> predicates = new ArrayList<>();
                 if (availability != null && !availability.isEmpty()) {
@@ -95,9 +99,13 @@ public class MangaServices {
                 return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
             };
             Page<Manga> resultPage = mangaRepository.findAll(spec, pageable);
-            return resultPage.getContent().stream()
+            List<MangaResponse> content = resultPage.getContent().stream()
                     .map(MangaResponse::toResponse)
                     .toList();
+            return new MangaPageResponse(
+                    content,// THIS IS THE COUNT YOU WANTED
+                    resultPage.getTotalPages()
+            );
         }
 
     }
@@ -146,21 +154,4 @@ public class MangaServices {
         Manga manga = mangaRepository.findById(manga_id).orElseThrow(() -> new OrderException("Manga associated with this Id is not found", HttpStatus.NOT_FOUND));
         mangaRepository.delete(manga);
     }
-
-    // FOR SEARCH FILTERING
-//    public List<MangaResponse> useSearchFiltering(String search) {
-//        List<Manga> listOfManga;
-//        List<MangaResponse> listOfResponse = new ArrayList<>();
-//        Specification<Manga> spec = (root, query, criteriaBuilder) -> {
-//            List<Predicate> predicates = new ArrayList<>();
-//            predicates.add(criteriaBuilder.like(criteriaBuilder.lower(root.get("title")), "%" + search.toLowerCase() + "%"));
-//            predicates.add(criteriaBuilder.like(criteriaBuilder.lower(root.get("author")), "%" + search.toLowerCase() + "%"));
-//            return criteriaBuilder.or(predicates.toArray(new Predicate[0]));
-//        };
-//        listOfManga = mangaRepository.findAll(spec);
-//        for(Manga manga: listOfManga){
-//            listOfResponse.add(MangaResponse.toResponse(manga));
-//        }
-//        return listOfResponse;
-//    }
 }

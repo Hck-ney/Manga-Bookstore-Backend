@@ -1,5 +1,6 @@
 package com.example.demo.manga.controller;
 
+import com.example.demo.manga.dto.MangaPageResponse;
 import com.example.demo.manga.dto.MangaRequest;
 import com.example.demo.manga.dto.MangaResponse;
 import com.example.demo.manga.entity.Manga;
@@ -34,7 +35,7 @@ public class MangaController {
     }
 
     @GetMapping("/catalog")
-    public List<MangaResponse> getMangaPage(
+    public MangaPageResponse getMangaPage(
             @RequestParam(name = "page-number", required = false) Integer page_number,
             @RequestParam(required = false) String category,
             @RequestParam(required = false) String sortedBy,
@@ -54,12 +55,4 @@ public class MangaController {
         mangaServices.deleteManga(manga_id);
      }
 
-
-     // Should Filter
-    // should i mix it with the same endpoint or create a new one
-    // what about the page for the catalog? I plan on using that as well
-//    @GetMapping("/catalog")
-//    public List<MangaResponse> useSearchFiltering(@RequestParam String search){
-//        return mangaServices.useSearchFiltering(search);
-//    }
 }
