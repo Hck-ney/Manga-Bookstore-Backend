@@ -23,6 +23,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Service
 public class MangaServices {
@@ -118,6 +119,14 @@ public class MangaServices {
             dtoList.add(dto);
         }
         return dtoList;
+    }
+
+    public List<MangaResponse> getPreOrder(){
+        Pageable pageable = PageRequest.of(0, 10, Sort.by("dateAdded"));
+        Page<Manga> manga = mangaRepository.findByAvailability(Availability.PRE_ORDER, pageable);
+        return manga.getContent().stream()
+                .map(MangaResponse::toResponse)
+                .collect(Collectors.toList());
     }
 
     public MangaResponse updateManga(Long manga_id, Manga manga) {

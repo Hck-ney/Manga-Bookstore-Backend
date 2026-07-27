@@ -45,6 +45,11 @@ public class MangaController {
             return mangaServices.getMangaPage("AVAILABLE", category, page_number, sortedBy, order, search);
     }
 
+    @GetMapping("/pre-order")
+    public List<MangaResponse> getPreOrder(){
+        return mangaServices.getPreOrder();
+    }
+
     @PutMapping("/manga/{manga_id}")
     public MangaResponse updateProduct(@PathVariable Long manga_id, @RequestBody Manga manga){
         return mangaServices.updateManga(manga_id, manga);

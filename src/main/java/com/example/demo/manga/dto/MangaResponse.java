@@ -17,7 +17,7 @@ public record MangaResponse(
         Category category,
         Availability availability,
         String description,
-        LocalDateTime date_added
+        LocalDateTime dateAdded
 ) {
     public static MangaResponse toResponse(Manga manga){
         return new MangaResponse(
