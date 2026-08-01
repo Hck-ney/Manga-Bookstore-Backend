@@ -7,11 +7,11 @@ import com.example.demo.orderDetails.dto.OrderDetailsDTO;
 import com.example.demo.orderDetails.entity.OrderDetails;
 import com.example.demo.orders.dto.orderRequest;
 import com.example.demo.orders.dto.OrderResponse;
-import com.example.demo.customer.entity.Customer;
+import com.example.demo.users.entity.Users;
 import com.example.demo.orders.entity.Orders;
 import com.example.demo.exceptions.OrderException;
 import com.example.demo.orders.mapper.OrderMapper;
-import com.example.demo.customer.repository.CustomerRepo;
+import com.example.demo.users.repository.UsersRepository;
 import com.example.demo.orders.repository.OrderRepo;
 import com.example.demo.orders.services.interfaces.OrderInterface;
 import com.example.demo.manga.entity.Manga;
@@ -41,7 +41,7 @@ public class OrderService implements OrderInterface {
     OrderRepo orderRepo;
 
     @Autowired
-    CustomerRepo customerRepo;
+    UsersRepository usersRepository;
     LocalDateTime dateNow = LocalDateTime.now();
 
     @Autowired
@@ -62,12 +62,12 @@ public class OrderService implements OrderInterface {
         if (request.orderDetailsDTO() == null) {
             throw new OrderException("Order details list should not be null", HttpStatus.BAD_REQUEST);
         }
-        Customer cus = customerRepo.findById(request.customer_id()).orElseThrow(() -> new OrderException("Customer_id not found", HttpStatus.NOT_FOUND));
+        Users cus = usersRepository.findById(request.customer_id()).orElseThrow(() -> new OrderException("Customer_id not found", HttpStatus.NOT_FOUND));
         Orders orders = orderMapper.toEntity(request);
-        orders.setCustomer_name(cus.getName());
+        orders.setCustomer_name(cus.getUsername());
         orders.setEmail(cus.getEmail());
         orders.setAddress(cus.getAddress());
-        orders.setCustomer(cus);
+        orders.setUsers(cus);
         orders.setDate_time(dateNow);
 
         List<OrderDetails> orderDetailsList = new ArrayList<>();

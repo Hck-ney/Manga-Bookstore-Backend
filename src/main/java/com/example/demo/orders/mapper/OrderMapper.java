@@ -12,7 +12,7 @@ public interface OrderMapper {
 
     OrderResponse toResponse(Orders order);
 
-    @Mapping(target = "customer", ignore = true)
+    @Mapping(target = "users", ignore = true)
     @Mapping(target = "date_time", ignore = true)
     Orders toEntity(orderRequest request);
 

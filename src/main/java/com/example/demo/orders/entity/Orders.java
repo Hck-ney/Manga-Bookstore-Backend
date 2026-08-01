@@ -1,6 +1,6 @@
 package com.example.demo.orders.entity;
 
-import com.example.demo.customer.entity.Customer;
+import com.example.demo.users.entity.Users;
 import com.example.demo.orderDetails.entity.OrderDetails;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
@@ -25,7 +25,7 @@ public class Orders {
     @ManyToOne
     @JoinColumn(name = "customerId")
     @OnDelete(action = OnDeleteAction.SET_NULL)
-    private Customer customer;
+    private Users users;
     private String customer_name;
     private String address;
     private String phone_number;
