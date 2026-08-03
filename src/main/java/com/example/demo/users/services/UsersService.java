@@ -16,6 +16,32 @@ public class UsersService implements UsersInterface {
 
     @Override
     public Users createCustomer(Users users) {
+//        if(users.getUsername() == null || users.getOrders() == null || users.getAddress() == null || users.getEmail() == null
+//        || users.getRole() == null || users.getPhone_number() == null || users.getPassword() == null){
+//            throw new IllegalArgumentException("Has required value as null");
+//        }
+
+        if(users.getUsername() == null){
+            throw new IllegalArgumentException("username is null");
+        }
+        if(users.getAddress() == null){
+            throw new IllegalArgumentException("address is null");
+        }
+        if(users.getPhone_number() == null){
+            throw new IllegalArgumentException("phone number is null");
+        }
+        if(users.getEmail() == null){
+            throw new IllegalArgumentException("email is null");
+        }
+        if(users.getPassword() == null){
+            throw new IllegalArgumentException("password is null");
+        }
+        if(users.getOrders() == null){
+            throw new IllegalArgumentException("orders is null");
+        }
+        if(users.getRole() == null){
+            throw new IllegalArgumentException("role is null");
+        }
         return usersRepository.save(users);
     }
 

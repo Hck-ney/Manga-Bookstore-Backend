@@ -35,9 +35,15 @@ public class SecurityConfig {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/auth/**").permitAll()
+                        // PUBLIC ENDPOINTS
                         .requestMatchers(HttpMethod.GET, "/catalog/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/pre-order/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/account/**").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/cart/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/users/**").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/users/**").permitAll()
+
+                        // REQUIRES AUTHENTICATION
                         .requestMatchers("/admin/**").hasRole("ADMIN")
                         .anyRequest().authenticated()
                 )

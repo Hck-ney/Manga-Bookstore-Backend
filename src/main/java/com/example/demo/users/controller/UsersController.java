@@ -17,31 +17,31 @@ public class UsersController {
     private UsersService cusService;
 
     // Customer Sign Up
-    @PostMapping("/user")
+    @PostMapping("/users")
     public ResponseEntity<Users> createCustomer(@Valid @RequestBody Users users){
         return new ResponseEntity<>(cusService.createCustomer(users),HttpStatus.CREATED);
     }
 
     // Fetch all Customers
-    @GetMapping("/user")
+    @GetMapping("/users")
     public List<Users> getCustomer(){
         return cusService.getAllCustomers();
     }
 
     // Get Specific Customer by ID
-    @GetMapping("/user/{customer_id}")
+    @GetMapping("/users/{customer_id}")
     public UsersResponse getCustomerById(@PathVariable Long user_id){
         return cusService.getCustomerById(user_id);
     }
 
     // Update Information of Customer
-    @PutMapping("/user/{customer_id}")
+    @PutMapping("/users/{customer_id}")
     public Users updateCustomer(@PathVariable Long user_id, @RequestBody Users users){
         return cusService.updateCustomer(user_id, users);
     }
 
     //Delete Customer
-    @DeleteMapping("/user/{user_id}")
+    @DeleteMapping("/users/{user_id}")
     public void deleteCustomer(@PathVariable Long user_id){
         cusService.deleteCustomer(user_id);
     }
