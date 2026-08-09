@@ -35,14 +35,6 @@ public class CartServices {
     @Autowired
     private MangaRepository mangaRepository;
 
-    private Cart getOrCreateCartForUser(String username) {
-        Users user = usersRepository.findByUsername(username);
-        if(user == null){
-            throw new OrderException("User not found", HttpStatus.NOT_FOUND);
-        }
-        return cartRepository.findByUser(user).orElseThrow(()-> new OrderException("Cart associated with this ID cannot be found",HttpStatus.NOT_FOUND));
-    }
-
     public CartResponse createCart(CartRequest request){
         Cart cart = new Cart();
         Users user = usersRepository.findById(request.user_id()).orElseThrow(()-> new OrderException("User associated with this ID cannot be found", HttpStatus.NOT_FOUND));
@@ -66,10 +58,10 @@ public class CartServices {
         );
     }
 
-    public List<CartResponse> getAllCart(){
-        List<Cart> list = cartRepository.findAll();
-        return CartResponse.toListEntity(list);
-    }
+//    public List<CartResponse> getAllCart(){
+//        List<Cart> list = cartRepository.findAll();
+//        return CartResponse.toListEntity(list);
+//    }
 
     public CartResponse getCart(String username){
         Users user = usersRepository.findByUsername(username);
@@ -77,23 +69,6 @@ public class CartServices {
         return CartResponse.toResponse(cart);
     }
 
-//    public CartResponse updateCart(Long id, CartRequest request){
-//        Cart existing = cartRepository.findById(id).orElseThrow(()-> new OrderException("Cart associated with this ID cannot be found", HttpStatus.NOT_FOUND));
-//
-//        List<CartItem> cartItem = new ArrayList<>();
-//        for(CartItemRequest x: request.itemList()){
-//            CartItem item = new CartItem();
-//            item.setCart(cartRepository.findById(x.cart_id()).orElseThrow(()-> new OrderException("Cart associated with this ID cannot be found", HttpStatus.NOT_FOUND)));
-//            Manga manga = mangaRepository.findById(x.manga_id()).orElseThrow(()-> new OrderException("Manga associated with this ID cannot be found", HttpStatus.NOT_FOUND));
-//            item.setManga(manga);
-//            item.setPrice(manga.getPrice());
-//            item.setQuantity(x.quantity());
-//            cartItem.add(item);
-//        }
-//        existing.setCart_items(cartItem);
-//        cartRepository.save(existing);
-//        return CartResponse.toResponse(existing);
-//    }
 
     public CartResponse addItemToCart(String username, CartItemRequest itemRequest) {
         Users user = usersRepository.findByUsername(username);

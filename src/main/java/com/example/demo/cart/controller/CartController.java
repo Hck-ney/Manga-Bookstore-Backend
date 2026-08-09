@@ -2,17 +2,13 @@ package com.example.demo.cart.controller;
 
 import com.example.demo.cart.dto.CartRequest;
 import com.example.demo.cart.dto.CartResponse;
-import com.example.demo.cart.entity.Cart;
 import com.example.demo.cart.services.CartServices;
 import com.example.demo.cartItem.dto.CartItemRequest;
 import com.example.demo.cartItem.dto.UpdateQuantityRequest;
-import com.example.demo.cartItem.services.CartItemServices;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 public class CartController {
