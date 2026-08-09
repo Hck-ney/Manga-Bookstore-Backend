@@ -13,9 +13,9 @@ public class CartItem {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     private Cart cart;
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     private Manga manga;
     private Integer quantity;
     private BigDecimal price;

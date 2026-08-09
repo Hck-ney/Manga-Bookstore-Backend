@@ -1,5 +1,6 @@
 package com.example.demo.users.entity;
 
+import com.example.demo.cart.entity.Cart;
 import com.example.demo.enums.Roles;
 import com.example.demo.orders.entity.Orders;
 import jakarta.persistence.*;
@@ -31,4 +32,6 @@ public class Users {
     private List<Orders> orders;
     @Enumerated(EnumType.STRING)
     private Roles role;
+    @OneToOne(cascade = CascadeType.ALL)
+    private Cart cart;
 }

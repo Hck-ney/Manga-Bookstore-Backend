@@ -18,31 +18,29 @@ public class UsersController {
 
     // Customer Sign Up
     @PostMapping("/users")
-    public ResponseEntity<Users> createCustomer(@Valid @RequestBody Users users){
-        return new ResponseEntity<>(cusService.createCustomer(users),HttpStatus.CREATED);
+    public ResponseEntity<UsersResponse> createCustomer(@Valid @RequestBody Users users){
+        return new ResponseEntity<>(cusService.createUser(users),HttpStatus.CREATED);
     }
 
-    // Fetch all Customers
     @GetMapping("/users")
     public List<Users> getCustomer(){
-        return cusService.getAllCustomers();
+        return cusService.getAllUser();
     }
 
-    // Get Specific Customer by ID
-    @GetMapping("/users/{customer_id}")
-    public UsersResponse getCustomerById(@PathVariable Long user_id){
-        return cusService.getCustomerById(user_id);
+    @GetMapping("/users/{username}")
+    public UsersResponse getCustomerById(@PathVariable String username){
+        return cusService.getUserByUsername(username);
     }
 
     // Update Information of Customer
     @PutMapping("/users/{customer_id}")
     public Users updateCustomer(@PathVariable Long user_id, @RequestBody Users users){
-        return cusService.updateCustomer(user_id, users);
+        return cusService.updateUser(user_id, users);
     }
 
     //Delete Customer
     @DeleteMapping("/users/{user_id}")
     public void deleteCustomer(@PathVariable Long user_id){
-        cusService.deleteCustomer(user_id);
+        cusService.deleteUser(user_id);
     }
 }

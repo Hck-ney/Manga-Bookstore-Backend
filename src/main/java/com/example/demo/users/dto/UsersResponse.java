@@ -1,17 +1,20 @@
 package com.example.demo.users.dto;
 
+import com.example.demo.enums.Roles;
 import com.example.demo.users.entity.Users;
 import com.example.demo.orders.dto.OrderResponse;
 import java.util.List;
 
 public record UsersResponse(
-        String name,
+        String username,
         String address,
         String phone_number,
         String email,
-        List<OrderResponse> ordersList
+        List<OrderResponse> ordersList,
+        String role,
+        Long cart_id
 ) {
-    public static UsersResponse from(Users users){
+    public static UsersResponse toResponse(Users users){
         return new UsersResponse(
                 users.getUsername(),
                 users.getAddress(),
@@ -19,7 +22,9 @@ public record UsersResponse(
                 users.getEmail(),
                 users.getOrders().stream()
                         .map(OrderResponse::from)
-                        .toList()
+                        .toList(),
+                Roles.valueOf(String.valueOf(users.getRole())).toString(),
+                users.getCart().getId()
         );
     }
 }

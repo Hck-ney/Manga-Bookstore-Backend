@@ -7,6 +7,6 @@ import java.util.List;
 
 public record CartRequest (
         Long user_id,
-        List<CartItem> itemList
+        List<CartItemRequest> itemList
 ){
 }

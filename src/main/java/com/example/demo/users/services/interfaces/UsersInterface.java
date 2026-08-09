@@ -6,9 +6,9 @@ import com.example.demo.users.entity.Users;
 import java.util.List;
 
 public interface UsersInterface {
-    Users createCustomer(Users users);
-    UsersResponse getCustomerById(Long id);
-    List<Users> getAllCustomers();
-    Users updateCustomer(Long id, Users users);
-    void deleteCustomer(Long id);
+    UsersResponse createUser(Users users);
+    UsersResponse getUserByUsername(String username);
+    List<Users> getAllUser();
+    Users updateUser(Long id, Users users);
+    void deleteUser(Long id);
 }

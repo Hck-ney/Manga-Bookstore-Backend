@@ -1,4 +1,5 @@
 package com.example.demo.users.services;
+import com.example.demo.cart.entity.Cart;
 import com.example.demo.users.dto.UsersResponse;
 import com.example.demo.users.entity.Users;
 import com.example.demo.users.repository.UsersRepository;
@@ -6,6 +7,7 @@ import com.example.demo.users.services.interfaces.UsersInterface;
 import com.example.demo.exceptions.OrderException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import java.util.List;
 
@@ -14,13 +16,11 @@ public class UsersService implements UsersInterface {
     @Autowired
     private UsersRepository usersRepository;
 
-    @Override
-    public Users createCustomer(Users users) {
-//        if(users.getUsername() == null || users.getOrders() == null || users.getAddress() == null || users.getEmail() == null
-//        || users.getRole() == null || users.getPhone_number() == null || users.getPassword() == null){
-//            throw new IllegalArgumentException("Has required value as null");
-//        }
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
+    @Override
+    public UsersResponse createUser(Users users) {
         if(users.getUsername() == null){
             throw new IllegalArgumentException("username is null");
         }
@@ -42,22 +42,31 @@ public class UsersService implements UsersInterface {
         if(users.getRole() == null){
             throw new IllegalArgumentException("role is null");
         }
-        return usersRepository.save(users);
+        Cart cart = new Cart();
+        cart.setUser(users);
+        users.setPassword(passwordEncoder.encode(users.getPassword()));
+        users.setCart(cart);
+        usersRepository.save(users);
+        return UsersResponse.toResponse(users);
     }
 
     @Override
-    public UsersResponse getCustomerById(Long customer_id) {
-        Users cus = usersRepository.findById(customer_id).orElseThrow(()-> new OrderException("Customer associated with this ID cannot be found", HttpStatus.NOT_FOUND));
-        return UsersResponse.from(cus);
+    public UsersResponse getUserByUsername(String username) {
+        if(username == null){
+            throw new IllegalArgumentException("Username is null");
+        }
+        Users cus = usersRepository.findByUsername(username);
+
+        return UsersResponse.toResponse(cus);
     }
 
     @Override
-    public List<Users> getAllCustomers() {
+    public List<Users> getAllUser() {
         return usersRepository.findAll();
     }
 
     @Override
-    public Users updateCustomer(Long customer_id, Users users) {
+    public Users updateUser(Long customer_id, Users users) {
         Users cus = usersRepository.findById(customer_id).orElseThrow(()-> new OrderException("Customer associated with this Id cannot be found", HttpStatus.NOT_FOUND));
         cus.setUsername(users.getUsername());
         cus.setEmail(users.getEmail());
@@ -65,7 +74,7 @@ public class UsersService implements UsersInterface {
     }
 
     @Override
-    public void deleteCustomer(Long customer_id) {
+    public void deleteUser(Long customer_id) {
         Users users = usersRepository.findById(customer_id).orElseThrow(()-> new OrderException("Customer associated with this Id cannot be found", HttpStatus.NOT_FOUND));
         usersRepository.delete(users);
     }

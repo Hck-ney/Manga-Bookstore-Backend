@@ -1,10 +1,8 @@
 package com.example.demo.security;
 
-import com.example.demo.exceptions.OrderException;
 import com.example.demo.users.entity.Users;
 import com.example.demo.users.repository.UsersRepository;
 import lombok.NonNull;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -24,7 +22,10 @@ public class UserService implements UserDetailsService {
 
     @Override
     public @NonNull UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        Users user = userRepository.findByUsername(username.toLowerCase()).orElseThrow(()-> new UsernameNotFoundException("Username not found"));
+        Users user = userRepository.findByUsername(username.toLowerCase());
+        if(user==null){
+            throw new UsernameNotFoundException("User not found");
+        }
         return org.springframework.security.core.userdetails.User.builder()
                 .username(user.getUsername())
                 .password(user.getPassword())
