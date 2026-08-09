@@ -31,16 +31,6 @@ public class AuthController {
         this.jwtService = jwtService;
     }
 
-//    @PostMapping("/login")
-//    public AuthResponse login(@Valid @RequestBody LoginRequest request) {
-//        authenticationManager.authenticate(
-//                new UsernamePasswordAuthenticationToken(request.username(), request.password())
-//        );
-//        UserDetails userDetails = userDetailsService.loadUserByUsername(request.username());
-//        String token = jwtService.generateToken(userDetails);
-//
-//        return new AuthResponse(token);
-//    }
     @PostMapping("/login")
     public ResponseEntity<Void> login(@Valid @RequestBody LoginRequest request) {
         authenticationManager.authenticate(

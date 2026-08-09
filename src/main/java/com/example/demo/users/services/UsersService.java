@@ -1,5 +1,6 @@
 package com.example.demo.users.services;
 import com.example.demo.cart.entity.Cart;
+import com.example.demo.users.dto.UsersRequest;
 import com.example.demo.users.dto.UsersResponse;
 import com.example.demo.users.entity.Users;
 import com.example.demo.users.repository.UsersRepository;
@@ -20,34 +21,31 @@ public class UsersService implements UsersInterface {
     private PasswordEncoder passwordEncoder;
 
     @Override
-    public UsersResponse createUser(Users users) {
-        if(users.getUsername() == null){
+    public UsersResponse createUser(UsersRequest request) {
+        if(request.username() == null){
             throw new IllegalArgumentException("username is null");
         }
-        if(users.getAddress() == null){
+        if(request.address() == null){
             throw new IllegalArgumentException("address is null");
         }
-        if(users.getPhone_number() == null){
+        if(request.phone_number() == null){
             throw new IllegalArgumentException("phone number is null");
         }
-        if(users.getEmail() == null){
+        if(request.email() == null){
             throw new IllegalArgumentException("email is null");
         }
-        if(users.getPassword() == null){
+        if(request.password() == null){
             throw new IllegalArgumentException("password is null");
         }
-        if(users.getOrders() == null){
-            throw new IllegalArgumentException("orders is null");
-        }
-        if(users.getRole() == null){
+        if(request.role() == null){
             throw new IllegalArgumentException("role is null");
         }
+        String encodedPass = passwordEncoder.encode(request.password());
         Cart cart = new Cart();
-        cart.setUser(users);
-        users.setPassword(passwordEncoder.encode(users.getPassword()));
-        users.setCart(cart);
-        usersRepository.save(users);
-        return UsersResponse.toResponse(users);
+        Users user = UsersRequest.toEntity(request, cart, encodedPass);
+        cart.setUser(user);
+        usersRepository.save(user);
+        return UsersResponse.toResponse(user);
     }
 
     @Override

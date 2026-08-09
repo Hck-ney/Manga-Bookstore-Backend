@@ -1,5 +1,6 @@
 package com.example.demo.users.controller;
 
+import com.example.demo.users.dto.UsersRequest;
 import com.example.demo.users.dto.UsersResponse;
 import com.example.demo.users.entity.Users;
 import jakarta.validation.Valid;
@@ -18,8 +19,8 @@ public class UsersController {
 
     // Customer Sign Up
     @PostMapping("/users")
-    public ResponseEntity<UsersResponse> createCustomer(@Valid @RequestBody Users users){
-        return new ResponseEntity<>(cusService.createUser(users),HttpStatus.CREATED);
+    public ResponseEntity<UsersResponse> createCustomer(@Valid @RequestBody UsersRequest request){
+        return new ResponseEntity<>(cusService.createUser(request),HttpStatus.CREATED);
     }
 
     @GetMapping("/users")
@@ -28,19 +29,19 @@ public class UsersController {
     }
 
     @GetMapping("/users/{username}")
-    public UsersResponse getCustomerById(@PathVariable String username){
+    public UsersResponse getCustomerById(@Valid @PathVariable String username){
         return cusService.getUserByUsername(username);
     }
 
     // Update Information of Customer
     @PutMapping("/users/{customer_id}")
-    public Users updateCustomer(@PathVariable Long user_id, @RequestBody Users users){
+    public Users updateCustomer(@Valid @PathVariable Long user_id, @RequestBody Users users){
         return cusService.updateUser(user_id, users);
     }
 
     //Delete Customer
     @DeleteMapping("/users/{user_id}")
-    public void deleteCustomer(@PathVariable Long user_id){
+    public void deleteCustomer(@Valid @PathVariable Long user_id){
         cusService.deleteUser(user_id);
     }
 }
