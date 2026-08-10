@@ -9,8 +9,7 @@ public record UsersRequest(
         String address,
         String phone_number,
         String email,
-        String password,
-        String role
+        String password
 ) {
     public static Users toEntity(UsersRequest request, Cart cart, String password){
         Users user = new Users();
@@ -19,7 +18,7 @@ public record UsersRequest(
         user.setAddress(request.address);
         user.setPassword(password);
         user.setPhone_number(request.phone_number);
-        user.setRole(Roles.valueOf(request.role));
+        user.setRole(Roles.USER);
         user.setCart(cart);
         return user;
     }

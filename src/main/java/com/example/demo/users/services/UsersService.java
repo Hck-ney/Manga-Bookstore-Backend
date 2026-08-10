@@ -37,9 +37,6 @@ public class UsersService implements UsersInterface {
         if(request.password() == null){
             throw new IllegalArgumentException("password is null");
         }
-        if(request.role() == null){
-            throw new IllegalArgumentException("role is null");
-        }
         String encodedPass = passwordEncoder.encode(request.password());
         Cart cart = new Cart();
         Users user = UsersRequest.toEntity(request, cart, encodedPass);

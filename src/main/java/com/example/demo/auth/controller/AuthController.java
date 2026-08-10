@@ -34,10 +34,10 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity<Void> login(@Valid @RequestBody LoginRequest request) {
         authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(request.username(), request.password())
+                new UsernamePasswordAuthenticationToken(request.email(), request.password())
         );
 
-    UserDetails userDetails = userDetailsService.loadUserByUsername(request.username());
+    UserDetails userDetails = userDetailsService.loadUserByUsername(request.email());
     String token = jwtService.generateToken(userDetails);
 
     ResponseCookie cookie = ResponseCookie.from("jwt", token)

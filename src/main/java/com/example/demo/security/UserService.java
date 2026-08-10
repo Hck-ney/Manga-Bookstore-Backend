@@ -1,8 +1,10 @@
 package com.example.demo.security;
 
+import com.example.demo.exceptions.OrderException;
 import com.example.demo.users.entity.Users;
 import com.example.demo.users.repository.UsersRepository;
 import lombok.NonNull;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -21,13 +23,10 @@ public class UserService implements UserDetailsService {
     }
 
     @Override
-    public @NonNull UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        Users user = userRepository.findByUsername(username.toLowerCase());
-        if(user==null){
-            throw new UsernameNotFoundException("User not found");
-        }
+    public @NonNull UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+        Users user = userRepository.findByEmail(email.toLowerCase()).orElseThrow(()-> new OrderException("Email cannot be found", HttpStatus.NOT_FOUND));
         return org.springframework.security.core.userdetails.User.builder()
-                .username(user.getUsername())
+                .username(user.getEmail())
                 .password(user.getPassword())
                 .authorities(List.of(new SimpleGrantedAuthority("ROLE_" + user.getRole().name())))
                 .build();

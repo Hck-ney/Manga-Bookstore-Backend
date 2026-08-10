@@ -63,15 +63,15 @@ public class CartServices {
 //        return CartResponse.toListEntity(list);
 //    }
 
-    public CartResponse getCart(String username){
-        Users user = usersRepository.findByUsername(username);
+    public CartResponse getCart(String email){
+        Users user = usersRepository.findByEmail(email).orElseThrow(()-> new OrderException("User associated with this Email cannot be found", HttpStatus.NOT_FOUND));
         Cart cart = cartRepository.findById(user.getCart().getId()).orElseThrow(()-> new OrderException("Cart associated with this ID cannot be found", HttpStatus.NOT_FOUND));
         return CartResponse.toResponse(cart);
     }
 
 
-    public CartResponse addItemToCart(String username, CartItemRequest itemRequest) {
-        Users user = usersRepository.findByUsername(username);
+    public CartResponse addItemToCart(String email, CartItemRequest itemRequest) {
+        Users user = usersRepository.findByEmail(email).orElseThrow(()-> new OrderException("User associated with this Email cannot be found", HttpStatus.NOT_FOUND));
         Cart cart = cartRepository.findByUser(user).orElseThrow(()-> new OrderException("Cart associated with this ID cannot be found", HttpStatus.NOT_FOUND));
         Manga manga = mangaRepository.findById(itemRequest.manga_id())
                 .orElseThrow(() -> new OrderException("Manga not found", HttpStatus.NOT_FOUND));
