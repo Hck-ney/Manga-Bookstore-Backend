@@ -3,6 +3,7 @@ package com.example.demo.manga.services;
 import com.example.demo.enums.Availability;
 import com.example.demo.enums.Category;
 import com.example.demo.exceptions.OrderException;
+import com.example.demo.external.supabase.SupabaseStorageService;
 import com.example.demo.inventory.dto.InvRequest;
 import com.example.demo.inventory.entity.Inventory;
 import com.example.demo.inventory.repository.InventoryRepo;
@@ -22,7 +23,9 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -38,10 +41,13 @@ public class MangaServices {
     @Autowired
     private InventoryRepo inventoryRepo;
 
+    @Autowired
+    private SupabaseStorageService storageService;
+
     LocalDateTime date = LocalDateTime.now();
 
     @Transactional
-    public MangaResponse createManga(InvRequest invRequest) {
+    public MangaResponse createManga(InvRequest invRequest, MultipartFile image) throws IOException {
         if (invRequest.price() == null || invRequest.category() == null
                 || invRequest.publication_year() == null || invRequest.description() == null ||
                 invRequest.description().isBlank() || invRequest.author() == null
@@ -51,6 +57,7 @@ public class MangaServices {
         }
         MangaDescription desc = new MangaDescription();
         Manga manga = MangaRequest.toEntity(invRequest, desc);
+        manga.setImg_url(storageService.upload(image));
         if (invRequest.availability() == Availability.AVAILABLE) {
             manga.setDateAdded(date);
         }

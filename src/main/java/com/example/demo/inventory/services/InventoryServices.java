@@ -1,21 +1,15 @@
 package com.example.demo.inventory.services;
 
-import com.example.demo.exceptions.OrderException;
 import com.example.demo.inventory.dto.InvPageResponse;
-import com.example.demo.inventory.dto.InvRequest;
 import com.example.demo.inventory.dto.InvResponse;
 import com.example.demo.inventory.entity.Inventory;
 import com.example.demo.inventory.repository.InventoryRepo;
-import com.example.demo.manga.dto.MangaPageResponse;
-import com.example.demo.manga.dto.MangaResponse;
-import com.example.demo.manga.entity.Manga;
 import com.example.demo.manga.repository.MangaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
