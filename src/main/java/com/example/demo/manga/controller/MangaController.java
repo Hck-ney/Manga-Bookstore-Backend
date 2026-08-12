@@ -1,5 +1,6 @@
 package com.example.demo.manga.controller;
 
+import com.example.demo.inventory.dto.InvRequest;
 import com.example.demo.manga.dto.MangaPageResponse;
 import com.example.demo.manga.dto.MangaRequest;
 import com.example.demo.manga.dto.MangaResponse;
@@ -19,9 +20,9 @@ public class MangaController {
     @Autowired
     private MangaServices mangaServices;
 
-    @PostMapping("/manga")
-    public ResponseEntity<MangaResponse> createProduct(@Valid @RequestBody MangaRequest mangaRequest){
-        return new ResponseEntity<>(mangaServices.createManga(mangaRequest), HttpStatus.CREATED);
+    @PostMapping("/admin/inventory")
+    public ResponseEntity<MangaResponse> createProduct(@Valid @RequestBody InvRequest invRequest){
+        return new ResponseEntity<>(mangaServices.createManga(invRequest), HttpStatus.CREATED);
     }
 
     @GetMapping("/manga/{manga_id}")
@@ -32,6 +33,12 @@ public class MangaController {
     @GetMapping("/mangas")
     public List<MangaResponse> getAllProducts(){
         return mangaServices.getAllManga();
+    }
+
+    // ADMIN: GET ALL MANGA
+    @GetMapping("/admin/manga")
+    public MangaPageResponse getAllManga(@Valid @RequestParam(name = "page", required = false) Integer page_number){
+        return mangaServices.getAllMangaPages(page_number);
     }
 
     @GetMapping("/catalog")

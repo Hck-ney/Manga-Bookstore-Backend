@@ -14,6 +14,7 @@ public class Inventory {
     private Long id;
 
     @OneToOne
+    @JoinColumn(name = "manga_id")
     private Manga manga;
     private Integer stockQuantity;
     private Integer reorderLevel;

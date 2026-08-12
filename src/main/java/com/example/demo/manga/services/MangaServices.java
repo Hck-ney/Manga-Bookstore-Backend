@@ -3,6 +3,9 @@ package com.example.demo.manga.services;
 import com.example.demo.enums.Availability;
 import com.example.demo.enums.Category;
 import com.example.demo.exceptions.OrderException;
+import com.example.demo.inventory.dto.InvRequest;
+import com.example.demo.inventory.entity.Inventory;
+import com.example.demo.inventory.repository.InventoryRepo;
 import com.example.demo.manga.dto.MangaPageResponse;
 import com.example.demo.manga.dto.MangaRequest;
 import com.example.demo.manga.dto.MangaResponse;
@@ -10,6 +13,7 @@ import com.example.demo.manga.entity.Manga;
 import com.example.demo.manga.repository.MangaRepository;
 import com.example.demo.mangaDescription.entity.MangaDescription;
 import jakarta.persistence.criteria.Predicate;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -31,22 +35,32 @@ public class MangaServices {
     @Autowired
     private MangaRepository mangaRepository;
 
+    @Autowired
+    private InventoryRepo inventoryRepo;
+
     LocalDateTime date = LocalDateTime.now();
 
-    public MangaResponse createManga(MangaRequest mangaRequest) {
-        if (mangaRequest.price() == null || mangaRequest.category() == null
-                || mangaRequest.publication_year() == null || mangaRequest.description() == null ||
-                mangaRequest.description().isBlank() || mangaRequest.author() == null
-                || mangaRequest.img_url() == null || mangaRequest.title() == null) {
+    @Transactional
+    public MangaResponse createManga(InvRequest invRequest) {
+        if (invRequest.price() == null || invRequest.category() == null
+                || invRequest.publication_year() == null || invRequest.description() == null ||
+                invRequest.description().isBlank() || invRequest.author() == null
+                || invRequest.img_url() == null || invRequest.title() == null ||
+                invRequest.stockQuantity() == null || invRequest.reOrderLevel() == null) {
             throw new OrderException("Missing required fields", HttpStatus.BAD_REQUEST);
         }
         MangaDescription desc = new MangaDescription();
-        Manga manga = MangaRequest.toEntity(mangaRequest, desc);
-        if (mangaRequest.availability() == Availability.AVAILABLE) {
+        Manga manga = MangaRequest.toEntity(invRequest, desc);
+        if (invRequest.availability() == Availability.AVAILABLE) {
             manga.setDateAdded(date);
         }
         desc.setManga(manga);
-        desc.setSynopsis(mangaRequest.description());
+        desc.setSynopsis(invRequest.description());
+        Inventory inventory = new Inventory();
+        inventory.setManga(manga);
+        inventory.setReorderLevel(invRequest.reOrderLevel());
+        inventory.setStockQuantity(invRequest.stockQuantity());
+        inventoryRepo.save(inventory);
         mangaRepository.save(manga);
         return MangaResponse.toResponse(manga);
     }
@@ -56,6 +70,7 @@ public class MangaServices {
         return MangaResponse.toResponse(manga);
     }
 
+    // GET AVAILABLE MANGA IN PAGES
     public MangaPageResponse getMangaPage(String availability, String category, Integer page_number, String sortedBy, String order, String search) {
         if (page_number == null || page_number <= 1) {
             page_number = 0;
@@ -104,13 +119,14 @@ public class MangaServices {
                     .map(MangaResponse::toResponse)
                     .toList();
             return new MangaPageResponse(
-                    content,// THIS IS THE COUNT YOU WANTED
+                    content,
                     resultPage.getTotalPages()
             );
         }
 
     }
 
+    // GET ALL MANGA FOR TESTING
     public List<MangaResponse> getAllManga() {
         List<Manga> mangaList = mangaRepository.findAll();
         List<MangaResponse> dtoList = new ArrayList<>();
@@ -119,6 +135,22 @@ public class MangaServices {
             dtoList.add(dto);
         }
         return dtoList;
+    }
+
+    // ADMIN: GET ALL MANGA IN PAGES
+    public MangaPageResponse getAllMangaPages(Integer page_number){
+        if(page_number==null){
+            page_number = 0;
+        }
+        Pageable page = PageRequest.of(page_number, 5, Sort.by(Sort.Direction.DESC, "dateAdded"));
+        Page<Manga> result = mangaRepository.findAll(page);
+        List<MangaResponse> content = result.getContent().stream()
+                .map(MangaResponse::toResponse)
+                .toList();
+        return new MangaPageResponse(
+                content,
+                result.getTotalPages()
+        );
     }
 
     public List<MangaResponse> getPreOrder(){
