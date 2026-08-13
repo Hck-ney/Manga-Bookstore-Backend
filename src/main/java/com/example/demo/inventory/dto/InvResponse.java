@@ -4,12 +4,14 @@ import com.example.demo.inventory.entity.Inventory;
 import com.example.demo.manga.dto.MangaResponse;
 
 public record InvResponse(
-    MangaResponse manga,
-    Integer stockQuantity,
-    Integer reorderLevel
+        Long id,
+        MangaResponse manga,
+        Integer stockQuantity,
+        Integer reorderLevel
 ) {
     public static InvResponse toResponse(Inventory inventory){
         return new InvResponse(
+                inventory.getId(),
                 MangaResponse.toResponse(inventory.getManga()),
                 inventory.getStockQuantity(),
                 inventory.getReorderLevel()
