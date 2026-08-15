@@ -19,33 +19,6 @@ public class InventoryController {
     @Autowired
     private InventoryServices inventoryServices;
 
-//    @PostMapping("/inventory")
-//    public ResponseEntity<Inventory> addInventory(@RequestBody InvRequest invRequest){
-//        return new ResponseEntity<>(inventoryServices.addInventory(invRequest), HttpStatus.CREATED);
-//    }
-
-//    @GetMapping("/inventory")
-//    public List<Inventory> getInventoryList(){
-//        return inventoryServices.getInventoryList();
-//    }
-//
-//    @GetMapping("/inventory/{inventory_id}")
-//    public Inventory getInventory(@PathVariable Long inventory_id){
-//        return inventoryServices.getInventory(inventory_id);
-//    }
-//
-//    @PutMapping("/inventory/{inventory_id}")
-//    public Inventory updateInventory(@PathVariable Long inventory_id, @RequestBody  InvRequest invRequest){
-//        return inventoryServices.updateInventory(inventory_id, invRequest);
-//    }
-//
-//    @DeleteMapping("/inventory/{inventory_id}")
-//    public void deleteInventory(@PathVariable Long inventory_id){
-//         inventoryServices.deleteInventory(inventory_id);
-//    }
-
-    // ADMIN
-
     @GetMapping("/admin/inventory")
     public InvPageResponse getPages(@Valid @RequestParam(name = "page", required = false) Integer page_number){
         return inventoryServices.getPages(page_number);
@@ -57,5 +30,10 @@ public class InventoryController {
                                                        @RequestPart(value = "image", required = false) MultipartFile image,
                                                        @PathVariable Long id) throws IOException {
         return new ResponseEntity<>(inventoryServices.updateMangaAndInventory(invRequest, image, id), HttpStatus.CREATED);
+    }
+
+    @DeleteMapping("/admin/inventory/{id}")
+    public void deleteInventoryAndManga(@Valid @PathVariable Long id){
+         inventoryServices.deleteInventoryAndManga(id);
     }
 }

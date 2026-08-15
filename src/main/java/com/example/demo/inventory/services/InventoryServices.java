@@ -109,4 +109,9 @@ public class InventoryServices {
         mangaDescriptionRepository.save(desc);
         return InvResponse.toResponse(inventoryRepo.save(inv));
     }
+
+    public void deleteInventoryAndManga(Long id){
+        Inventory inv = inventoryRepo.findById(id).orElseThrow(()-> new OrderException("Inventory associated with this ID cannot be found", HttpStatus.NOT_FOUND));
+        inventoryRepo.delete(inv);
+    }
 }
