@@ -46,6 +46,7 @@ public class SecurityConfig {
                         .requestMatchers("/manga/**").permitAll()
                         .requestMatchers("/users/**").permitAll()
                         .requestMatchers("/pre-order/**").permitAll()
+                        .requestMatchers("/new-arrival/**").permitAll()
                         .requestMatchers("/admin/**").permitAll()
                         //.requestMatchers("/admin/**").hasRole("ADMIN")
                         .anyRequest().authenticated()

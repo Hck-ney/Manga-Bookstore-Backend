@@ -160,6 +160,26 @@ public class MangaServices {
         );
     }
 
+    // FETCH FIRST 4 MANGA FOR PRE-ARRIVAL SECTION
+    public MangaPageResponse getPreArrivalSection(){
+        Pageable page = PageRequest.of(
+                0,
+                4,
+                Sort.by(
+                        Sort.Order.desc("dateAdded"),
+                        Sort.Order.desc("id")
+                )
+        );
+        Page<Manga> result = mangaRepository.findAll(page);
+        List<MangaResponse> content = result.getContent().stream()
+                .map(MangaResponse::toResponse)
+                .toList();
+        return new MangaPageResponse(
+                content,
+                result.getTotalPages()
+        );
+    }
+
     public List<MangaResponse> getPreOrder(){
         Pageable pageable = PageRequest.of(0, 10, Sort.by("dateAdded"));
         Page<Manga> manga = mangaRepository.findByAvailability(Availability.PRE_ORDER, pageable);
