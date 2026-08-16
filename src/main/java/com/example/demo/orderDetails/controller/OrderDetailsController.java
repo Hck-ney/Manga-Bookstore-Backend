@@ -1,5 +1,6 @@
 package com.example.demo.orderDetails.controller;
 
+import com.example.demo.orderDetails.dto.BestSellerDTO;
 import com.example.demo.orderDetails.dto.OrderDetailsDTO;
 import com.example.demo.orderDetails.entity.OrderDetails;
 import com.example.demo.orderDetails.services.OrderDetailsServices;
@@ -27,6 +28,16 @@ public class OrderDetailsController {
     public List<OrderDetails> listOrderDetail(){
         return orderDetailsServices.listOrderDetail();
     }
+
+    @GetMapping("/order_details/best_seller")
+    public ResponseEntity<BestSellerDTO> getBestSeller() {
+        BestSellerDTO topSeller = orderDetailsServices.getTopBestSeller();
+        if (topSeller == null) {
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.ok(topSeller);
+    }
+
     @PutMapping("/OrderDetails/{orderDetailId}")
     public OrderDetails updateOrderDetail(@PathVariable Long orderDetailId, @RequestBody OrderDetailsDTO orderDetailsDTO){
         return orderDetailsServices.updateOrderDetail(orderDetailId, orderDetailsDTO);

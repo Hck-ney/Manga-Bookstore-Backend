@@ -42,6 +42,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/auth/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/catalog/**").permitAll()
+                        .requestMatchers("/order_details/**").permitAll()
                         .requestMatchers("/cart/**").permitAll()
                         .requestMatchers("/manga/**").permitAll()
                         .requestMatchers("/users/**").permitAll()

@@ -1,6 +1,7 @@
 package com.example.demo.orderDetails.services;
 
 import com.example.demo.exceptions.OrderException;
+import com.example.demo.orderDetails.dto.BestSellerDTO;
 import com.example.demo.orderDetails.dto.OrderDetailsDTO;
 import com.example.demo.orderDetails.entity.OrderDetails;
 import com.example.demo.manga.entity.Manga;
@@ -9,6 +10,7 @@ import com.example.demo.orders.entity.Orders;
 import com.example.demo.orders.repository.OrderRepo;
 import com.example.demo.manga.repository.MangaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
@@ -61,5 +63,10 @@ public class OrderDetailsServices {
     public void deleteOrderDetail(Long orderDetailId){
         OrderDetails order = orderDetailsRepo.findById(orderDetailId).orElseThrow(()-> new OrderException("OrderDetail associated with this Id is not found",HttpStatus.NOT_FOUND));
         orderDetailsRepo.delete(order);
+    }
+
+    public BestSellerDTO getTopBestSeller() {
+        List<BestSellerDTO> results = orderDetailsRepo.findTopBestSeller(PageRequest.of(0, 1));
+        return results.isEmpty() ? null : results.getFirst();
     }
 }
