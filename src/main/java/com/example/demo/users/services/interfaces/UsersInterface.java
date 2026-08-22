@@ -8,6 +8,7 @@ import java.util.List;
 
 public interface UsersInterface {
     UsersResponse createUser(UsersRequest request);
+    UsersResponse createAdmin(UsersRequest request);
     UsersResponse getUserByUsername(String username);
     List<Users> getAllUser();
     Users updateUser(Long id, Users users);

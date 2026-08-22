@@ -28,6 +28,11 @@ public class UsersController {
         return cusService.getAllUser();
     }
 
+    @PostMapping("/users/admin")
+    public ResponseEntity<UsersResponse> createAdmin(@Valid @RequestBody UsersRequest request){
+        return new ResponseEntity<>(cusService.createAdmin(request),HttpStatus.CREATED);
+    }
+
     @GetMapping("/users/{username}")
     public UsersResponse getCustomerById(@Valid @PathVariable String username){
         return cusService.getUserByUsername(username);

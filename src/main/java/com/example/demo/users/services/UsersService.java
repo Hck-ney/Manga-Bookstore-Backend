@@ -39,7 +39,32 @@ public class UsersService implements UsersInterface {
         }
         String encodedPass = passwordEncoder.encode(request.password());
         Cart cart = new Cart();
-        Users user = UsersRequest.toEntity(request, cart, encodedPass);
+        Users user = UsersRequest.toEntity(request, cart, encodedPass, "USER");
+        cart.setUser(user);
+        usersRepository.save(user);
+        return UsersResponse.toResponse(user);
+    }
+
+    @Override
+    public UsersResponse createAdmin(UsersRequest request) {
+        if(request.username() == null){
+            throw new IllegalArgumentException("username is null");
+        }
+        if(request.address() == null){
+            throw new IllegalArgumentException("address is null");
+        }
+        if(request.phone_number() == null){
+            throw new IllegalArgumentException("phone number is null");
+        }
+        if(request.email() == null){
+            throw new IllegalArgumentException("email is null");
+        }
+        if(request.password() == null){
+            throw new IllegalArgumentException("password is null");
+        }
+        String encodedPass = passwordEncoder.encode(request.password());
+        Cart cart = new Cart();
+        Users user = UsersRequest.toEntity(request, cart, encodedPass, "ADMIN");
         cart.setUser(user);
         usersRepository.save(user);
         return UsersResponse.toResponse(user);
